@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
-    public Text ScoreText;
+    public Text ScoreText, bestScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -25,6 +26,8 @@ public class MainManager : MonoBehaviour
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
+        UpdateBestScore();
+  
         int[] pointCountArray = new [] {1,1,2,2,5,5};
         for (int i = 0; i < LineCount; ++i)
         {
@@ -70,7 +73,23 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        if (m_Points > DataManager.Instance.highestScore) {
+            DataManager.Instance.highestScore = m_Points;
+            DataManager.Instance.topPlayerName = DataManager.Instance.playerName;
+            DataManager.Instance.SaveBestScore();
+        }
+
         m_GameOver = true;
         GameOverText.SetActive(true);
+    }
+
+    public void UpdateBestScore()
+    {
+        string path = Application.persistentDataPath + "/savebest.json";
+        if (File.Exists(path)) {
+            bestScoreText.text = "Best Score : " + DataManager.Instance.topPlayerName + " : " + DataManager.Instance.highestScore; 
+        } else {
+            bestScoreText.text = "Best Score";
+        }
     }
 }
