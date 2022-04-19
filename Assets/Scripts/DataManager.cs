@@ -74,4 +74,16 @@ public class DataManager : MonoBehaviour
             playerName = data.playerName;
         }
     }
+
+    public void ResetData()
+    {
+        string path = Application.persistentDataPath;
+        if (File.Exists(path + "/savebest.json")) {
+            File.Delete(path + "/savebest.json");
+        }
+
+        if (File.Exists(path + "/saveplayer.json")) {
+            File.Delete(path + "/saveplayer.json");
+        }
+    }
 }
